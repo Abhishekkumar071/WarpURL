@@ -1,8 +1,14 @@
-# React + Vite
+# WarpURL Frontend ⚡
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Vite + React 18 + Tailwind CSS — futuristic URL shortener frontend.
 
-Currently, two official plugins are available:
+## Quick Start
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```bash
+npm install
+npm run dev     # http://localhost:3000
+npm run build   # production build
+```
+
+Requires WarpURL Spring Boot backend on http://localhost:8080
+See full docs inside for API contract and design system details.

@@ -58,7 +58,7 @@ public class WebSecurityConfig {
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll() // <--- YEH LINE ADD KAREIN
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
-//                        .requestMatchers("/error").permitAll() // <--- YEH LINE ADD KAREIN
+                        .requestMatchers("/error").permitAll() // <--- YEH LINE ADD KAREIN
                         .requestMatchers("/api/urls/**").authenticated()
                         .requestMatchers("/{shortUrl}").permitAll()
                         .anyRequest().authenticated()
