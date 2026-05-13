@@ -42,7 +42,7 @@ git clone [https://github.com/Abhishekkumar071/WarpURL.git](https://github.com/A
 run backend: cd WarpURL-sb
 run frontend: cd WarpURL-react (npm intall then npm run dev)
 
-
+```
 2. Database Setup
 Create a blank database in your local PostgreSQL instance:
 
