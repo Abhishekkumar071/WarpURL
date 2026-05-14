@@ -52,10 +52,11 @@ CREATE DATABASE url_shortener_db;
 Navigate to src/main/resources/application.properties and update your database credentials:
 
 Properties
+```
 spring.datasource.url=jdbc:postgresql://localhost:5432/url_shortener_db
 spring.datasource.username=YOUR_POSTGRES_USERNAME
 spring.datasource.password=YOUR_POSTGRES_PASSWORD
-
+```
 # Set a strong 256-bit Base64 encoded secret for JWT
 jwt.secret=1234567890abcdef1234567890abcdef
 jwt.expiration=86400000
