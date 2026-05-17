@@ -83,3 +83,5 @@ docker run -p 8080:8080 warpurl-api
 Method,Endpoint,Description,Request Body
 POST,/api/auth/public/register,Register a new user,"{ ""username"": ""John"", ""email"": ""j@test.com"", ""password"": ""123"" }"
 POST,/api/auth/public/login,Authenticate & get JWT,"{ ""username"": ""John"", ""password"": ""123"" }"
+
+<img width="1168" height="717" alt="userView" src="https://github.com/user-attachments/assets/283d02d4-61d3-4a17-bf62-4fd13c2534d4" />
