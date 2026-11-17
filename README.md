@@ -19,7 +19,7 @@ The primary goal of this project is to provide a fast, secure, and reliable way 
 * **CORS Configured:** Ready to be consumed by any modern frontend (React, Next.js, Vue).
 
 ## 🛠️ System Architecture & Tech Stack
-* **Backend Framework:** Java 17+ & Spring Boot 3.x
+* **Backend Framework:** Java 17+ & Spring Boot 4.x
 * **Database:** PostgreSQL (Relational mapping via Hibernate/Spring Data JPA)
 * **Authentication:** Spring Security with custom JWT Filters
 * **Build Tool:** Maven
