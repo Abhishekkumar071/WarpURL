@@ -33,4 +33,9 @@ public class AuthController {
         userService.registerUser(user);
         return ResponseEntity.ok("User registered successfully");
     }
+
+    @PostMapping("/public/demo-login")
+    public ResponseEntity<?> loginAsDemoUser(){
+        return ResponseEntity.ok(userService.loginAsDemoUser());
+    }
 }
