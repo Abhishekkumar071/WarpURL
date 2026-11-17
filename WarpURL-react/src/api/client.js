@@ -33,8 +33,9 @@ api.interceptors.response.use(
 
 /* ── Auth ────────────────────────────────────────────────────── */
 export const authAPI = {
-  register: (data) => api.post("/api/auth/public/register", data),
-  login:    (data) => api.post("/api/auth/public/login", data),
+  register:  (data) => api.post("/api/auth/public/register", data),
+  login:     (data) => api.post("/api/auth/public/login", data),
+  demoLogin: ()     => api.post("/api/auth/public/demo-login"),
 };
 
 /* ── URLs ────────────────────────────────────────────────────── */

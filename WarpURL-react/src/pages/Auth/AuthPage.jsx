@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, Lock, Mail, Zap } from "lucide-react";
+import { User, Lock, Mail, Zap, Sparkles } from "lucide-react";
 import toast from "react-hot-toast";
 import { authAPI } from "../../api/client";
 import { useAuth } from "../../context/AuthContext";
@@ -41,6 +41,7 @@ function Orb({ className, style }) {
 export default function AuthPage() {
   const [mode, setMode] = useState("login");
   const [loading, setLoading] = useState(false);
+  const [demoLoading, setDemoLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [loginF, setLoginF] = useState({ username: "", password: "" });
   const [regF,   setRegF]   = useState({ username: "", email: "", password: "" });
@@ -48,6 +49,21 @@ export default function AuthPage() {
   const navigate = useNavigate();
 
   const toggle = (m) => { setMode(m); setErrors({}); };
+
+  /* Demo Login */
+  const handleDemoLogin = async () => {
+    setDemoLoading(true);
+    try {
+      const { data } = await authAPI.demoLogin();
+      login(data.token, { username: "demo_user", email: "demo@warpurl.com", isDemo: true });
+      toast.success("Welcome, Demo Explorer! ⚡", { duration: 3000 });
+      navigate("/dashboard");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to start demo session");
+    } finally {
+      setDemoLoading(false);
+    }
+  };
 
   /* Login */
   const handleLogin = async (e) => {
@@ -250,6 +266,27 @@ export default function AuthPage() {
                   </p>
                 </form>
               </div>
+            </div>
+
+            {/* Instant Demo User Access */}
+            <div className="mt-6 pt-5 border-t border-slate-200/80">
+              <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-3">
+                <span className="bg-white/80 px-2 rounded backdrop-blur-sm">
+                  Or Try Immediately
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={handleDemoLogin}
+                disabled={demoLoading || loading}
+                className="w-full group relative flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl text-sm font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100/90 border border-emerald-300/80 hover:border-emerald-400 transition-all duration-200 shadow-sm hover:shadow active:scale-[0.99] disabled:opacity-60"
+              >
+                <Sparkles className={`w-4 h-4 text-emerald-600 transition-transform ${demoLoading ? "animate-spin" : "group-hover:scale-110"}`} />
+                <span>{demoLoading ? "Preparing Demo Environment..." : "Explore as Demo User (1-Click)"}</span>
+              </button>
+              <p className="text-center text-[11px] text-slate-400 mt-2">
+                No sign-up required • Pre-loaded with realistic analytics data
+              </p>
             </div>
           </div>
         </div>
