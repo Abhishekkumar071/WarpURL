@@ -60,6 +60,16 @@ export default function Header() {
 
         {/* Right */}
         <div className="flex items-center gap-3">
+          {/* Demo indicator */}
+          {user?.username === "demo_user" && (
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-amber-300/80 bg-amber-50 text-amber-700">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+              <span className="font-display font-semibold text-[10px] uppercase tracking-wider">
+                Demo Mode
+              </span>
+            </div>
+          )}
+
           {/* Status badge */}
           <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full border"
             style={{ background: "rgba(34,197,94,0.07)", borderColor: "rgba(34,197,94,0.25)" }}>
