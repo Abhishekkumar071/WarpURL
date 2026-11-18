@@ -72,7 +72,7 @@ public class UrlMappingService {
     }
 
     public List<UrlMappingDTO> getUrlsByUser(User user){
-        return urlMappingRepository.findByUser(user).stream()
+        return urlMappingRepository.findByUserOrderByCreatedDateDesc(user).stream()
                 .map(this::convertToDto)
                 .toList();
     }
