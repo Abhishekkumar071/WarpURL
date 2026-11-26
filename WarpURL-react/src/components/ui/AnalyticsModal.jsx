@@ -60,8 +60,10 @@ export default function AnalyticsModal({ url, onClose }) {
         filled.push({ date: format(d, "MMM d"), clicks: map[key] || 0 });
       }
       setData(filled);
-    } catch {
-      toast.error("Failed to fetch analytics");
+    } catch (err) {
+      if (!err?.isRateLimited) {
+        toast.error("Failed to fetch analytics");
+      }
     } finally {
       setLoading(false);
     }

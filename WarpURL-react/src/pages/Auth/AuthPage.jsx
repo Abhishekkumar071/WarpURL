@@ -59,7 +59,9 @@ export default function AuthPage() {
       toast.success("Welcome, Demo Explorer! ⚡", { duration: 3000 });
       navigate("/dashboard");
     } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to start demo session");
+      if (!err?.isRateLimited) {
+        toast.error(err.response?.data?.message || "Failed to start demo session");
+      }
     } finally {
       setDemoLoading(false);
     }
@@ -78,7 +80,9 @@ export default function AuthPage() {
       toast.success("Welcome back ⚡");
       navigate("/dashboard");
     } catch (err) {
-      toast.error(err.response?.data?.message || "Invalid credentials");
+      if (!err?.isRateLimited) {
+        toast.error(err.response?.data?.message || "Invalid credentials");
+      }
     } finally {
       setLoading(false);
     }
@@ -98,7 +102,9 @@ export default function AuthPage() {
       toast.success("Account created! 🚀");
       navigate("/dashboard");
     } catch (err) {
-      toast.error(err.response?.data?.message || "Registration failed");
+      if (!err?.isRateLimited) {
+        toast.error(err.response?.data?.message || "Registration failed");
+      }
     } finally {
       setLoading(false);
     }
