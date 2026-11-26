@@ -12,6 +12,7 @@ import WarpSpinner from "../../components/ui/WarpSpinner";
 export default function DashboardPage() {
   const { user } = useAuth();
   const [longUrl, setLongUrl] = useState("");
+  const [customAlias, setCustomAlias] = useState("");
   const [shortenLoading, setShortenLoading] = useState(false);
   const [urls, setUrls] = useState([]);
   const [urlsLoading, setUrlsLoading] = useState(true);
@@ -42,11 +43,19 @@ export default function DashboardPage() {
     if (!/^https?:\/\/.+/.test(trimmed)) {
       toast.error("URL must start with http:// or https://"); return;
     }
+
+    const trimmedAlias = customAlias.trim();
+    if (trimmedAlias && !/^[a-zA-Z0-9_-]{3,30}$/.test(trimmedAlias)) {
+      toast.error("Custom alias must be 3-30 letters, numbers, hyphens, or underscores");
+      return;
+    }
+
     setShortenLoading(true);
     try {
-      const { data } = await urlAPI.shorten(trimmed);
+      const { data } = await urlAPI.shorten(trimmed, trimmedAlias || undefined);
       setUrls((prev) => [data, ...prev]);
       setLongUrl("");
+      setCustomAlias("");
       toast.success("URL warped! ⚡", { duration: 3000 });
       if (navigator.clipboard) {
         await navigator.clipboard.writeText(data.shortUrl);
@@ -119,7 +128,7 @@ export default function DashboardPage() {
 
             {/* Shorten form */}
             <form onSubmit={handleShorten}
-              className="flex gap-3 max-w-3xl animate-fade-up"
+              className="flex flex-col sm:flex-row gap-3 max-w-3xl animate-fade-up"
               style={{ animationDelay: "0.24s" }}>
               <div
                 className="flex items-center gap-3 flex-1 rounded-2xl px-4 transition-all duration-200"
@@ -154,6 +163,42 @@ export default function DashboardPage() {
                   </button>
                 )}
               </div>
+
+              {/* Custom Alias Input (Optional) */}
+              <div
+                className="flex items-center gap-2 rounded-2xl px-4 sm:w-56 transition-all duration-200"
+                style={{
+                  background: "rgba(255,255,255,0.92)",
+                  border: "1.5px solid rgba(37,99,235,0.2)",
+                  boxShadow: "0 4px 20px rgba(37,99,235,0.07)",
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = "#0ea5e9";
+                  e.currentTarget.style.boxShadow = "0 0 0 3px rgba(14,165,233,0.12), 0 0 30px rgba(14,165,233,0.1)";
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = "rgba(37,99,235,0.2)";
+                  e.currentTarget.style.boxShadow = "0 4px 20px rgba(37,99,235,0.07)";
+                }}
+              >
+                <span className="text-sm font-semibold text-warp-500 select-none">/</span>
+                <input
+                  type="text"
+                  value={customAlias}
+                  onChange={(e) => setCustomAlias(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ""))}
+                  placeholder="custom-slug"
+                  disabled={shortenLoading}
+                  className="w-full py-5 text-[14px] bg-transparent border-none outline-none text-slate-800 placeholder-slate-400"
+                  style={{ fontFamily: "DM Sans, sans-serif" }}
+                />
+                {customAlias && (
+                  <button type="button" onClick={() => setCustomAlias("")}
+                    className="text-slate-400 hover:text-slate-600 text-xs shrink-0 px-1">
+                    ✕
+                  </button>
+                )}
+              </div>
+
               <Button type="submit" loading={shortenLoading} size="lg"
                 style={{ whiteSpace: "nowrap", minWidth: 140 }}>
                 <Zap size={15} /> Warp It

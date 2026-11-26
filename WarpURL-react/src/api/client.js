@@ -40,7 +40,7 @@ export const authAPI = {
 
 /* ── URLs ────────────────────────────────────────────────────── */
 export const urlAPI = {
-  shorten:      (originalUrl)                   => api.post("/api/urls/shorten", { originalUrl }),
+  shorten:      (originalUrl, customAlias)      => api.post("/api/urls/shorten", { originalUrl, customAlias }),
   getMyUrls:    ()                               => api.get("/api/urls/myurls"),
   getAnalytics: (shortCode, startDate, endDate) =>
     api.get(`/api/urls/analytics/${shortCode}`, { params: { startDate, endDate } }),
