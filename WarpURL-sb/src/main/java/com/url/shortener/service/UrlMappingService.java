@@ -3,6 +3,7 @@ package com.url.shortener.service;
 import com.url.shortener.config.CacheConfig;
 import com.url.shortener.dtos.ClickEventDTO;
 import com.url.shortener.dtos.UrlMappingDTO;
+import com.url.shortener.event.UrlClickedEvent;
 import com.url.shortener.models.ClickEvent;
 import com.url.shortener.models.UrlMapping;
 import com.url.shortener.models.User;
@@ -12,6 +13,7 @@ import com.url.shortener.util.MurmurHash3;
 import lombok.AllArgsConstructor;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -27,6 +29,7 @@ public class UrlMappingService {
     private UrlMappingRepository urlMappingRepository;
     private ClickEventRepository clickEventRepository;
     private CacheManager cacheManager;
+    private ApplicationEventPublisher eventPublisher;
 
     private static final String BASE62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final Pattern SLUG_PATTERN = Pattern.compile("^[a-zA-Z0-9_-]{3,30}$");
@@ -166,19 +169,23 @@ public class UrlMappingService {
     }
 
     /**
-     * Records click events and increments the count.
+     * Dispatches click telemetry asynchronously without blocking the HTTP redirect response.
+     */
+    public void publishClickTelemetry(String shortUrl, String userAgent, String referer, String clientIp) {
+        eventPublisher.publishEvent(new UrlClickedEvent(
+                shortUrl,
+                LocalDateTime.now(),
+                userAgent,
+                referer,
+                clientIp
+        ));
+    }
+
+    /**
+     * Records click events asynchronously via the telemetry event bus.
      */
     public void recordClick(String shortUrl) {
-        UrlMapping urlMapping = urlMappingRepository.findByShortUrl(shortUrl);
-        if (urlMapping != null) {
-            urlMapping.setClickCount(urlMapping.getClickCount() + 1);
-            urlMappingRepository.save(urlMapping);
-
-            ClickEvent clickEvent = new ClickEvent();
-            clickEvent.setClickDate(LocalDateTime.now());
-            clickEvent.setUrlMapping(urlMapping);
-            clickEventRepository.save(clickEvent);
-        }
+        publishClickTelemetry(shortUrl, null, null, null);
     }
 
     /**
