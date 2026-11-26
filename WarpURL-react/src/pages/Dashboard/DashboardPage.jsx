@@ -26,8 +26,10 @@ export default function DashboardPage() {
     try {
       const { data } = await urlAPI.getMyUrls();
       setUrls(data || []);
-    } catch {
-      toast.error("Failed to load your links");
+    } catch (err) {
+      if (!err?.isRateLimited) {
+        toast.error("Failed to load your links");
+      }
     } finally {
       setUrlsLoading(false);
     }
@@ -62,7 +64,9 @@ export default function DashboardPage() {
         toast.success("Short URL copied to clipboard", { icon: "📋", duration: 2000 });
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to shorten URL");
+      if (!err?.isRateLimited) {
+        toast.error(err.response?.data?.message || "Failed to shorten URL");
+      }
     } finally {
       setShortenLoading(false);
     }

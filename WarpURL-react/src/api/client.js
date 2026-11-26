@@ -1,4 +1,5 @@
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
@@ -18,14 +19,33 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-/* ── Response: handle 401 ────────────────────────────────────── */
+/* ── Response: handle 401 & 429 ──────────────────────────────── */
 api.interceptors.response.use(
   (res) => res,
   (error) => {
-    if (error.response?.status === 401) {
+    const status = error.response?.status;
+    if (status === 401) {
       localStorage.removeItem("warpurl_token");
       localStorage.removeItem("warpurl_user");
       window.location.href = "/auth";
+    } else if (status === 429) {
+      const retryAfter =
+        error.response.headers?.["retry-after"] ||
+        error.response.data?.retryAfterSeconds ||
+        60;
+      const baseMsg = error.response.data?.message || "Rate limit exceeded.";
+      const rateLimitMsg = `${baseMsg} Try again in ${retryAfter}s.`;
+      error.isRateLimited = true;
+      error.retryAfterSeconds = Number(retryAfter);
+      error.response.data = {
+        ...(error.response.data || {}),
+        message: rateLimitMsg,
+      };
+      toast.error(rateLimitMsg, {
+        id: "warp-rate-limit",
+        icon: "⏳",
+        duration: 5000,
+      });
     }
     return Promise.reject(error);
   }
