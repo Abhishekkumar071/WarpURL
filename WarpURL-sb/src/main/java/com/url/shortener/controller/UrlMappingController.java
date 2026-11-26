@@ -25,12 +25,20 @@ public class UrlMappingController {
     private UrlMappingService urlMappingService;
 
     @PostMapping("/shorten")
-    @PreAuthorize("hasRole('USER')")//so that, we can't access this end point, without proper authentication,...
-    public ResponseEntity<UrlMappingDTO> createShortUrl(@RequestBody Map<String,String> request, Principal principal){
-        String originalUrl=request.get("originalUrl");//now we need user, so to set the userid in the db
-        User user=userService.findByUsername(principal.getName());
-        UrlMappingDTO urlMappingDTO= urlMappingService.createShortUrl(originalUrl,user);
-        return ResponseEntity.ok(urlMappingDTO);
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> createShortUrl(@RequestBody Map<String,String> request, Principal principal){
+        try {
+            String originalUrl = request.get("originalUrl");
+            String customAlias = request.get("customAlias");
+            if (originalUrl == null || originalUrl.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("message", "Original URL is required"));
+            }
+            User user = userService.findByUsername(principal.getName());
+            UrlMappingDTO urlMappingDTO = urlMappingService.createShortUrl(originalUrl.trim(), customAlias, user);
+            return ResponseEntity.ok(urlMappingDTO);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
     }
     @GetMapping("/myurls")
     @PreAuthorize("hasRole('USER')")
