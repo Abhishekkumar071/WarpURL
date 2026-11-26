@@ -20,6 +20,21 @@ public class ClickEvent {
     @Column(nullable = false)
     private LocalDateTime clickDate;
 
+    @Column(length = 30)
+    private String deviceType = "Unknown";
+
+    @Column(length = 40)
+    private String os = "Unknown";
+
+    @Column(length = 40)
+    private String browser = "Unknown";
+
+    @Column(length = 255)
+    private String referer = "Direct";
+
+    @Column(length = 45)
+    private String clientIp;
+
     @ManyToOne
     @JoinColumn(name = "url_mapping_id", nullable = false)
     private UrlMapping urlMapping;
