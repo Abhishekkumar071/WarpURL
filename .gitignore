@@ -25,3 +25,7 @@ target/
 *.class
 .mvn/wrapper/maven-wrapper.jar
 build/
+
+# Local Verification Test Suite
+verification-tests/
+tests/
